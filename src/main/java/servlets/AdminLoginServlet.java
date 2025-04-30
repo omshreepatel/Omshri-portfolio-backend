@@ -12,40 +12,39 @@ import jakarta.servlet.http.*;
 @WebServlet("/AdminLoginServlet")
 public class AdminLoginServlet extends HttpServlet {
 
-    // Common method for setting CORS headers
+    // Set CORS headers properly (dynamic origin support)
     private void setCorsHeaders(HttpServletResponse response, HttpServletRequest request) {
         String origin = request.getHeader("Origin");
-        // Optional: Only allow known origins
-        if ("http://localhost:5173".equals(origin) || "https://omshri-portfolio-34qkz1388-omshreepatels-projects.vercel.app".equals(origin)) {
+
+        // Allow only specific trusted origins
+        if ("http://localhost:5173".equals(origin) || "https://omshri-portfolio.vercel.app".equals(origin)) {
             response.setHeader("Access-Control-Allow-Origin", origin);
         }
 
-        response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
-        response.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+        response.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+        response.setHeader("Access-Control-Allow-Headers", "Content-Type");
         response.setHeader("Access-Control-Allow-Credentials", "true");
     }
 
-    // Handle OPTIONS requests (pre-flight)
+    // Handle pre-flight requests from browser
     @Override
-    protected void doOptions(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doOptions(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         setCorsHeaders(response, request);
-        response.setStatus(HttpServletResponse.SC_OK); // Respond with status 200
+        response.setStatus(HttpServletResponse.SC_OK);
     }
 
-    // Handle POST requests for login
+    // Handle POST login request
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         setCorsHeaders(response, request);
 
-        // Set content type and encoding
         response.setContentType("text/plain");
         response.setCharacterEncoding("UTF-8");
 
         String username = request.getParameter("username");
         String password = request.getParameter("password");
-
-        // TODO: In future, use hashed passwords for better security
-        // Example: password = hashPassword(password);
 
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -53,12 +52,13 @@ public class AdminLoginServlet extends HttpServlet {
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/portfolio_db", "root", "364915@Om");
+            conn = DriverManager.getConnection(
+                    "jdbc:mysql://localhost:3306/portfolio_db", "root", "364915@Om");
 
             String sql = "SELECT * FROM admin_users WHERE username=? AND password=?";
             stmt = conn.prepareStatement(sql);
             stmt.setString(1, username);
-            stmt.setString(2, password); // Note: Replace with hashed password in future
+            stmt.setString(2, password); // Consider hashing in production
 
             rs = stmt.executeQuery();
 
@@ -66,13 +66,14 @@ public class AdminLoginServlet extends HttpServlet {
             if (rs.next()) {
                 HttpSession session = request.getSession();
                 session.setAttribute("adminUsername", username);
-                out.write("success"); // Successful login
+                out.write("success");
             } else {
-                out.write("failure"); // Invalid login
+                out.write("failure");
             }
+
         } catch (Exception e) {
             e.printStackTrace();
-            response.getWriter().write("error");  // In case of an error
+            response.getWriter().write("error");
         } finally {
             try { if (rs != null) rs.close(); } catch (Exception e) {}
             try { if (stmt != null) stmt.close(); } catch (Exception e) {}
