@@ -13,28 +13,39 @@ import jakarta.servlet.http.*;
 public class AdminLoginServlet extends HttpServlet {
 
     // Common method for setting CORS headers
-    
-    private void setCorsHeaders(HttpServletResponse response) {
-        response.setHeader("Access-Control-Allow-Origin", "http://localhost:5173");  // Frontend URL
+    private void setCorsHeaders(HttpServletResponse response, HttpServletRequest request) {
+        String origin = request.getHeader("Origin");
+        // Optional: Only allow known origins
+        if ("http://localhost:5173".equals(origin) || "https://omshri-portfolio-34qkz1388-omshreepatels-projects.vercel.app".equals(origin)) {
+            response.setHeader("Access-Control-Allow-Origin", origin);
+        }
+
         response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
         response.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-        response.setHeader("Access-Control-Allow-Credentials", "true");  // Allow cookies/session sharing
+        response.setHeader("Access-Control-Allow-Credentials", "true");
     }
 
     // Handle OPTIONS requests (pre-flight)
     @Override
     protected void doOptions(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        setCorsHeaders(response);
+        setCorsHeaders(response, request);
         response.setStatus(HttpServletResponse.SC_OK); // Respond with status 200
     }
 
     // Handle POST requests for login
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        setCorsHeaders(response);  // Set CORS headers
+        setCorsHeaders(response, request);
+
+        // Set content type and encoding
+        response.setContentType("text/plain");
+        response.setCharacterEncoding("UTF-8");
 
         String username = request.getParameter("username");
         String password = request.getParameter("password");
+
+        // TODO: In future, use hashed passwords for better security
+        // Example: password = hashPassword(password);
 
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -47,7 +58,7 @@ public class AdminLoginServlet extends HttpServlet {
             String sql = "SELECT * FROM admin_users WHERE username=? AND password=?";
             stmt = conn.prepareStatement(sql);
             stmt.setString(1, username);
-            stmt.setString(2, password);
+            stmt.setString(2, password); // Note: Replace with hashed password in future
 
             rs = stmt.executeQuery();
 
