@@ -15,6 +15,8 @@ public class AdminLoginServlet extends HttpServlet {
     // Common method for setting CORS headers
     
     private void setCorsHeaders(HttpServletResponse response) {
+        response.setHeader("Access-Control-Allow-Origin", "*");
+
         response.setHeader("Access-Control-Allow-Origin", "http://localhost:5173");  // Frontend URL
         response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
         response.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
