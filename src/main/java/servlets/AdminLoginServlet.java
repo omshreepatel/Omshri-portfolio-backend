@@ -85,24 +85,23 @@ import jakarta.servlet.http.*;
 @WebServlet("/AdminLoginServlet")
 public class AdminLoginServlet extends HttpServlet {
 
-    // Common method for setting CORS headers
     private void setCorsHeaders(HttpServletResponse response) {
-        response.setHeader("Access-Control-Allow-Origin", "https://omshri-portfolio.vercel.app/"); // Allow all origins
+        response.setHeader("Access-Control-Allow-Origin", "https://omshri-portfolio.vercel.app"); // Allow only your frontend domain
         response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
         response.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
         response.setHeader("Access-Control-Allow-Credentials", "true"); // Allow cookies/session sharing
     }
 
-    // Handle OPTIONS requests (pre-flight)
     @Override
-    protected void doOptions(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        setCorsHeaders(response);
+    protected void doOptions(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        setCorsHeaders(response); // Handle preflight CORS requests
         response.setStatus(HttpServletResponse.SC_OK); // Respond with status 200
     }
 
-    // Handle POST requests for login
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         setCorsHeaders(response); // Set CORS headers
 
         // Set response content type

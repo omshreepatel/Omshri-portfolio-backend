@@ -81,48 +81,61 @@ import jakarta.servlet.http.HttpServletResponse;
 @WebServlet("/ContactServlet")
 public class ContactServlet extends HttpServlet {
 
+    private void setCorsHeaders(HttpServletResponse response) {
+        response.setHeader("Access-Control-Allow-Origin", "https://omshri-portfolio.vercel.app"); // Allow only your frontend domain
+        response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
+        response.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+        response.setHeader("Access-Control-Allow-Credentials", "true"); // Allow cookies/session sharing
+    }
+
+    @Override
+    protected void doOptions(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        setCorsHeaders(response); // Handle preflight CORS requests
+        response.setStatus(HttpServletResponse.SC_OK); // Respond with status 200
+    }
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-        // 👉 Add CORS headers
-        response.setHeader("Access-Control-Allow-Origin", "https://omshri-portfolio.vercel.app/");
-        response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
-        response.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-        
+        setCorsHeaders(response); // Set CORS headers
+
         // Set response content type
         response.setContentType("application/json;charset=UTF-8");
-        
+
         // Read form data
         String name = request.getParameter("name");
         String email = request.getParameter("email");
         String message = request.getParameter("message");
-        
+
         PrintWriter out = response.getWriter();
-        
+
         // Validate input
         if (name == null || email == null || message == null || 
             name.isEmpty() || email.isEmpty() || message.isEmpty()) {
             out.print("{\"status\":\"error\",\"message\":\"All fields are required.\"}");
             return;
         }
-        
+
+        Connection con = null;
+        PreparedStatement ps = null;
+
         try {
             // JDBC Connection
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection con = DriverManager.getConnection(
+            con = DriverManager.getConnection(
                 "jdbc:mysql://localhost:3306/portfolio_db", "root", "364915@Om");
 
             // Insert Query
             String sql = "INSERT INTO contact_messages (name, email, message) VALUES (?, ?, ?)";
-            PreparedStatement ps = con.prepareStatement(sql);
-            
+            ps = con.prepareStatement(sql);
+
             ps.setString(1, name);
             ps.setString(2, email);
             ps.setString(3, message);
-            
+
             int rows = ps.executeUpdate();
-            
+
             if (rows > 0) {
                 // Success response
                 out.print("{\"status\":\"success\",\"message\":\"Message received successfully!\"}");
@@ -130,21 +143,13 @@ public class ContactServlet extends HttpServlet {
                 // Failure response
                 out.print("{\"status\":\"error\",\"message\":\"Failed to send message.\"}");
             }
-            
-            con.close();
         } catch (Exception e) {
             e.printStackTrace();
             out.print("{\"status\":\"error\",\"message\":\"" + e.getMessage() + "\"}");
+        } finally {
+            // Close resources
+            try { if (ps != null) ps.close(); } catch (Exception e) {}
+            try { if (con != null) con.close(); } catch (Exception e) {}
         }
-    }
-
-    @Override
-    protected void doOptions(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        // Handle preflight CORS requests
-        response.setHeader("Access-Control-Allow-Origin", "https://omshri-portfolio.vercel.app/");
-        response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
-        response.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-        response.setStatus(HttpServletResponse.SC_OK);
     }
 }
