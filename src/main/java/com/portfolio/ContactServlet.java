@@ -19,7 +19,7 @@ public class ContactServlet extends HttpServlet {
             throws ServletException, IOException {
         
         // 👉 Add CORS headers
-        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Access-Control-Allow-Origin", "https://omshri-portfolio.vercel.app/");
         response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
         response.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
         

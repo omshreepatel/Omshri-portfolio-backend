@@ -17,7 +17,7 @@ public class AdminLoginServlet extends HttpServlet {
     private void setCorsHeaders(HttpServletResponse response) {
         response.setHeader("Access-Control-Allow-Origin", "*");
 
-        response.setHeader("Access-Control-Allow-Origin", "http://localhost:5173");  // Frontend URL
+        response.setHeader("Access-Control-Allow-Origin", "https://omshri-portfolio.vercel.app/");  // Frontend URL
         response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
         response.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
         response.setHeader("Access-Control-Allow-Credentials", "true");  // Allow cookies/session sharing

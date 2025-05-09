@@ -1,11 +1,9 @@
-servlets\GetInternshipsServlet.class
 servlets\GetMessagesServlet.class
 com\portfolio\FetchMessagesServlet.class
 servlets\AdminLoginServlet.class
 com\backend\servlets\AdminAuthFilter.class
 com\mycompany\portfolio\backend1\resources\JakartaEE10Resource.class
 com\portfolio\ContactServlet.class
-servlets\GetCertificationsServlet.class
 servlets\GetProjectsServlet.class
 com\backend\servlets\AdminLoginServlet1.class
 com\mycompany\portfolio\backend1\JakartaRestConfiguration.class
