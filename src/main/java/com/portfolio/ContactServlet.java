@@ -22,13 +22,19 @@ public class ContactServlet extends HttpServlet {
         response.setStatus(HttpServletResponse.SC_OK);
     }
 
+//    private void setCorsHeaders(HttpServletResponse response) {
+//        // Remove trailing slash from origin
+//        response.setHeader("Access-Control-Allow-Origin", "*");
+//        response.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+//        response.setHeader("Access-Control-Allow-Headers", "Content-Type");
+//        response.setHeader("Access-Control-Max-Age", "3600");
+//    }
     private void setCorsHeaders(HttpServletResponse response) {
-        // Remove trailing slash from origin
-        response.setHeader("Access-Control-Allow-Origin", "https://omshri-portfolio.vercel.app");
-        response.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
-        response.setHeader("Access-Control-Allow-Headers", "Content-Type");
-        response.setHeader("Access-Control-Max-Age", "3600");
-    }
+    response.setHeader("Access-Control-Allow-Origin", "https://omshri-portfolio.vercel.app"); // Allow frontend origin
+    response.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+    response.setHeader("Access-Control-Allow-Headers", "Content-Type");
+    response.setHeader("Access-Control-Allow-Credentials", "true"); // Important for authentication-based requests
+}
 
 
     @Override
