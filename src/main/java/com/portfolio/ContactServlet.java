@@ -30,7 +30,7 @@ public class ContactServlet extends HttpServlet {
 //        response.setHeader("Access-Control-Max-Age", "3600");
 //    }
     private void setCorsHeaders(HttpServletResponse response) {
-    response.setHeader("Access-Control-Allow-Origin", "https://omshri-portfolio-cw52rueru-omshreepatels-projects.vercel.app"); // Allow frontend origin
+    response.setHeader("Access-Control-Allow-Origin", "*"); // Allow frontend origin
     response.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
     response.setHeader("Access-Control-Allow-Headers", "Content-Type");
     response.setHeader("Access-Control-Allow-Credentials", "true"); // Important for authentication-based requests
